@@ -390,10 +390,10 @@ class MVCSecurityTestCase(BaseMVCTestCase):
             self.assertEqual(rv.status_code, 200)
             # Test unauthorized EDIT
             rv = client.get(f"/model1view/edit/{model_id}")
-            self.assertEqual(rv.status_code, 302)
+            self.assertEqual(rv.status_code, 403)
             # Test unauthorized DELETE
             rv = client.get(f"/model1view/delete/{model_id}")
-            self.assertEqual(rv.status_code, 302)
+            self.assertEqual(rv.status_code, 403)
 
     def test_sec_reset_password(self):
         """

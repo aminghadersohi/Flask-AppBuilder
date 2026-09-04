@@ -1,8 +1,6 @@
 from types import SimpleNamespace
 
-import pytest
 from flask import Flask, g
-
 from flask_appbuilder.security.views import (
     AuthDBView,
     AuthLDAPView,
@@ -10,6 +8,7 @@ from flask_appbuilder.security.views import (
     AuthRemoteUserView,
     AuthSAMLView,
 )
+import pytest
 
 
 @pytest.mark.parametrize(
