@@ -576,6 +576,10 @@ class AuthView(BaseView):
     def login(self):
         pass
 
+    def _get_safe_next_url(self) -> str:
+        """Return the requested redirect target, or the application index."""
+        return get_safe_redirect(request.args.get("next", ""))
+
     def _get_authenticated_user(self):
         """Resolve the current user before logout clears the session.
         Returns a fresh User model from DB, or None if not authenticated.
@@ -617,7 +621,7 @@ class AuthDBView(AuthView):
     @no_cache
     def login(self):
         if g.user is not None and g.user.is_authenticated:
-            return redirect(self.appbuilder.get_url_for_index)
+            return redirect(self._get_safe_next_url())
         form = LoginForm_db()
         if form.validate_on_submit():
             next_url = get_safe_redirect(request.args.get("next", ""))
@@ -641,7 +645,7 @@ class AuthLDAPView(AuthView):
     @no_cache
     def login(self):
         if g.user is not None and g.user.is_authenticated:
-            return redirect(self.appbuilder.get_url_for_index)
+            return redirect(self._get_safe_next_url())
         form = LoginForm_db()
         if form.validate_on_submit():
             next_url = get_safe_redirect(request.args.get("next", ""))
@@ -667,7 +671,7 @@ class AuthOAuthView(AuthView):
         log.debug("Provider: %s", provider)
         if g.user is not None and g.user.is_authenticated:
             log.debug("Already authenticated %s", g.user)
-            return redirect(self.appbuilder.get_url_for_index)
+            return redirect(self._get_safe_next_url())
 
         if provider is None:
             return self.render_template(
@@ -788,7 +792,7 @@ class AuthSAMLView(AuthView):
     @no_cache
     def login(self, idp: Optional[str] = None) -> WerkzeugResponse:
         if g.user is not None and g.user.is_authenticated:
-            return redirect(self.appbuilder.get_url_for_index)
+            return redirect(self._get_safe_next_url())
 
         sm = self.appbuilder.sm
         providers = sm.saml_providers
@@ -983,8 +987,7 @@ class AuthRemoteUserView(AuthView):
     def login(self) -> WerkzeugResponse:
         username = request.environ.get(self.appbuilder.sm.auth_remote_user_env_var)
         if g.user is not None and g.user.is_authenticated:
-            next_url = request.args.get("next", "")
-            return redirect(get_safe_redirect(next_url))
+            return redirect(self._get_safe_next_url())
         if username:
             user = self.appbuilder.sm.auth_user_remote_user(username)
             if user is None:
