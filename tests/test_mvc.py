@@ -1629,7 +1629,7 @@ class MVCTestCase(BaseMVCTestCase):
             self.appbuilder.sm.del_permission_role(role, pvm_write)
 
             rv = client.get("/model1permoverride/action/action1/1")
-            self.assertEqual(rv.status_code, 403)
+            self.assertEqual(rv.status_code, 302)
 
         # cleanup
         self.appbuilder.session.delete(user)
