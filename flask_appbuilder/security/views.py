@@ -622,7 +622,7 @@ class AuthDBView(AuthView):
     def login(self):
         if g.user is not None and g.user.is_authenticated:
             # The target has been restricted by get_safe_redirect.
-            return redirect(self._get_safe_next_url())  # codeql[py/url-redirection]
+            return redirect(self._get_safe_next_url())  # lgtm[py/url-redirection]
         form = LoginForm_db()
         if form.validate_on_submit():
             next_url = get_safe_redirect(request.args.get("next", ""))
@@ -647,7 +647,7 @@ class AuthLDAPView(AuthView):
     def login(self):
         if g.user is not None and g.user.is_authenticated:
             # The target has been restricted by get_safe_redirect.
-            return redirect(self._get_safe_next_url())  # codeql[py/url-redirection]
+            return redirect(self._get_safe_next_url())  # lgtm[py/url-redirection]
         form = LoginForm_db()
         if form.validate_on_submit():
             next_url = get_safe_redirect(request.args.get("next", ""))
@@ -674,7 +674,7 @@ class AuthOAuthView(AuthView):
         if g.user is not None and g.user.is_authenticated:
             log.debug("Already authenticated %s", g.user)
             # The target has been restricted by get_safe_redirect.
-            return redirect(self._get_safe_next_url())  # codeql[py/url-redirection]
+            return redirect(self._get_safe_next_url())  # lgtm[py/url-redirection]
 
         if provider is None:
             return self.render_template(
@@ -796,7 +796,7 @@ class AuthSAMLView(AuthView):
     def login(self, idp: Optional[str] = None) -> WerkzeugResponse:
         if g.user is not None and g.user.is_authenticated:
             # The target has been restricted by get_safe_redirect.
-            return redirect(self._get_safe_next_url())  # codeql[py/url-redirection]
+            return redirect(self._get_safe_next_url())  # lgtm[py/url-redirection]
 
         sm = self.appbuilder.sm
         providers = sm.saml_providers
@@ -992,7 +992,7 @@ class AuthRemoteUserView(AuthView):
         username = request.environ.get(self.appbuilder.sm.auth_remote_user_env_var)
         if g.user is not None and g.user.is_authenticated:
             # The target has been restricted by get_safe_redirect.
-            return redirect(self._get_safe_next_url())  # codeql[py/url-redirection]
+            return redirect(self._get_safe_next_url())  # lgtm[py/url-redirection]
         if username:
             user = self.appbuilder.sm.auth_user_remote_user(username)
             if user is None:
